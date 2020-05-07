@@ -1,0 +1,165 @@
+<html>
+<head>
+<title>
+Documentation - Jeff Hemmen
+</title>
+</head>
+<body>
+<center><h1>Webserver</h1><h3><u>Projet de Jeff Hemmen</u></h3><a href="http://jeff.orca.fragments.lu/webserver">Home Page</a> | <a href="http://jeff.orca.fragments.lu/webserver/download.html">Download</a></center>
+<ol>
+<h2><li>Pr&eacute;sentation</li></h2>
+<p align="justify">
+Mon programme est un serveur web, qui impl�mente partiellement le protocole HTTP/1.0. Une documentation compl�te de ce protocole peut �tre trouv�e dans le RFC 1945 � l'adresse <a href="http://rfc.net/rfc1945.html">http://rfc.net/rfc1945.html</a>.<br>
+Le r�le de mon programme est de surveiller un certain port r�seau et de r�agir � des requ�tes. Si un h�te envoie une requ�te GET, il recevra en retour soit le fichier qu'il a r�clam�, soit, en cas d'erreur, une page d'erreur correspondante.
+</p>
+<p align="justify">
+<h2><li>Manuel d'utilisation</li></h2>
+	<ol>
+	<h3><li>Fichier de configuration</li></h3>
+	Le serveur peut �tre ex�cut� tout seul. Dans ce cas, il utilisera sa configuration de d�faut.<br>
+	Si vous voulez modifier cette configuration, vous pouvez cr�er un fichier texte que vous appelez 'jeff.conf' et qui se trouve imp�rativement dans le m�me r�pertoire que le programme ex�cutable.<br>
+	Le tableau suivant montre les diff�rents param�tres, leur valeurs par d�faut et les valeurs possibles:<br><br>
+	<table border=1 cellspacing=3>
+	<tr><th>Mot-clef</th><th>Description</th><th>Valeur par d�faut</th><th>Valeurs possibles</th></tr>
+	<tr><td>ip</td><td>Adresse IPv4 sur laquelle le serveur �coutera</td><td>127.0.0.1</td><td>Toute adresse IPv4 de l'ordinateur</td></tr>
+	<tr><td>port</td><td>Port sur lequel le serveur �coutera</td><td>80</td><td>0 - 65535 (sauf ports occup�s)</td></tr>
+	<tr><td>verbosity</td><td>Verbosit� (degr� d'�loquence) du programme (voir ci-dessous)</td><td>4</td><td>0 - 9</td></tr>
+	<tr><td>mastermail</td><td>Adresse courriel du responsable du site</td><td>webmaster@[adresse IP]</td><td>Toute adresse courriel</td></tr>
+	<tr><td>logfile</td><td>Nom du fichier "journal de bord"</td><td>jeff.log</td><td>Tout nom de fichier (absolu ou relatif)</td></tr>
+	<tr><td>index</td><td>Nom du fichier initial de chaque dossier</td><td>index.html</td><td>Tout nom de fichier (absolu ou relatif)</td></tr>
+	<tr><td>path</td><td>Chemin absolu du dossier dans lequel sont les pages web � envoyer</td><td>Le chemin dans lequel est ex�cut� le programme</td><td>Tout chemin absolu existant</td></tr>
+	<tr><td>errordir</td><td>Chemin absolu du dossier dans lequel sont les pages d'erreur</td><td>[path]\errors</td><td>Tout chemin absolu existant</td></tr>
+	<tr><td>rmpass</td><td>Mot de passe pour le Remote Management</td><td><i>rien</i></td><td>Toute chaine de caract�res</td></tr>
+	</table>
+	<br>
+	Il faut scrupuleusement respecter la notation suivante:<br>
+	d'abord on entre le mot-clef, puis deux points et puis, s�par� par un seul espace, la valeur, termin�e par un "� la ligne".<br>
+	Les diff�rentes entr�es seront toutes faites dans une nouvelle ligne.
+	On ne peut entrer qu'une seule valeur par mot-clef.<br>
+	Si vous attribuez dans une autre ligne une deuxi�me valeur � un mot-clef, le programme ne consid�rera seulement la derni�re valeur.<br>
+	<ul>
+	<h4><li><u>Adresse ip</u></li></h4>
+	Vous devez entrer une adresse IPv4 valide, propre � l'ordinateur, car sinon le serveur ne peur d�marrer correctement et se terminera avec un code erreur de connecteur r�seau de 10049.<br>
+	Si vous voulez utiliser le serveur dans un r�seau, vous devez indiquer l'adresse IP de l'ordinateur dans ce r�seau.<br>
+	Sinon vous pouvez aussi utiliser l'adresse loop-back 127.0.0.1.
+	<h4><li><u>Port</u></li></h4>
+	Le port peut �tre un nombre entre 0 et 65535, bornes comprises. Il vaudrait mieux contr�ler la disponibilit� du port en question, car les effets en cas de choix d'un port en utilisation sont inpr�dictibles.<br>
+	<h4><li><u>Verbosit�</u></li></h4>
+	Le degr� de verbosit� d�finit quels �v�nements seront �mis et quels seront omis.<br>
+	On a cinq groupes de verbosit�, chacun divis� en deux degr�s de verbosit� de la fa�on suivante:<br>
+		Le degr� pair est � utiliser si vous voulez �mettre les messages dans le fichier "journal de bord"
+		et le degr� sup�rieur, impair, sert � l'affichage suppl�mentaire dans la console.<br>
+		Les messages du groupe de verbosit� inf�rieur seront toujours affich�s � l'�cran.
+		<ul>
+		<li>0 et 1: afficher seulement le temps et la date du d�marrage du serveur.</li>
+		<li>2 et 3: afficher en plus la configuration du serveur.</li>
+		<li>4 et 5: afficher en plus le temps et la date des requ�tes des clients et leur adresse.</li>
+		<li>6 et 7: afficher en plus les donn�es re�ues par et envoy�es au client.</li>
+		<li>8 et 9: mode de d�boguage (pour les d�veloppeurs).</li>
+		</ul>
+	<h4><li><u>Mastermail</u></li></h4>
+	Cette adresse n'est utilis�e que dans les messages d'erreur g�n�r�s par le serveur.
+	<h4><li><u>Logfile</u></li></h4>
+	Un fichier 'journal de bord' sera cr�e automatiquement s'il n'existe pas encore, sinon il sera compl�t�.<br>
+	<h4><li><u>Index</u></li></h4>
+	Quand le client demande un objet dont la nature est un dossier, le fichier dans ce dossier qui porte le nom d�fini par cette configuration est envoy� automatiquement.
+	Si ce fichier n'existe pas, alors le client recevra un message d'erreur qui lui dit qu'il n'a pas le droit d'acc�der � l'index de ce fichier. (Voir erreurs HTTP: 403)
+	<h4><li><u>Path</u></li></h4>
+	Pour �viter qu'un client puisse acc�der � tous les fichiers qu'il veut, on peut d�finir un r�pertoire racine. Les clients ne pourront demander des fichiers qui ne se trouvent pas dans ce dossier, ni dans un sous-dossier.
+	<h4><li><u>Errordir</u></li></h4>
+	Pour plus de structuration dans l'organisation du site, on peut d�finir un r�pertoire dans lequel se trouvent les pages d'erreur personnalis�es.
+	Ces pages sont les seules qui ne doivent pas se trouver dans le dossier d�fini par le point pr�c�dent ou un de ses sous-dossiers.
+	<h4><li><u>RM-Pass</u></li></h4>
+	D�finit le mot de passe pour l'utilit� <i>Remote Management</i>. Voir point correspondant.
+	</ul>
+	</ol>
+	<br>
+	<table>
+	<tr><th>Exemple d'un fichier de configuration</th><th>Le programme avec cette configuration</th></tr>
+	<tr><td>
+	<code>
+	ip: 192.168.1.33<br>
+	port: 81<br>
+	mastermail: jeff&64;orca.lu<br>
+	verbosity: 6<br>
+	path: C:\webserver\jhdocs<br>
+	rmpass: shipoopi<br>
+	</code>
+	</td>
+	<td>
+	<img src="console.jpg" alt="Le programme affiche la configuration initiale � l'�cran s'il a une verbosit� d'au moins 3">
+	</td></tr>
+	</table>
+<h2><li>Le protocole HTTP</li></h2>
+Le serveur reconnait la commande GET du protocole HTTP et peut en d�duire l'objet demand�.<br>
+Si la premi�re commande n'est pas une commande GET, ni une des autres commandes support�es, le serveur envoie une page d'erreur 400, "mauvaise requ�te".<br>
+Sinon la premi�re ligne est une commande GET, le serveur en sort le chemin de l'objet demand� et essaye de l'ouvrir.<br>
+En cas de r�ussite, il envoie le fichier en question. En cas d'�chec, la page d'erreur correspondante sera envoy�e.
+<h2><li>Remote Managament</li></h2>
+Si la premi�re ligne commence par "JEFF", alors le programme sait qu'il a affaire au <i>Remote Management</i>.<br>
+Il lira ensuite toutes les lignes envoy�es jusqu'� ce qu'une ligne vide arrive, et, comme dans le fichier de configuration, lira les valeurs pour<br>
+<ul><li>action;</li><li>value;</li><li>pass;</li><li>file.</li></ul><br>
+Tableau:
+<table border=1 cellspacing=3>
+<tr><th>action</th><th>value</th><th>Effet caus�</th></tr>
+<tr><td rowspan=2>shutdown</td><td>halt</td><td>Arr�t complet du serveur.</td></tr>
+<tr><td>restart</td><td>Red�marrage du serveur.</td></tr>
+<tr><td rowspan=2>reload</td><td>conf</td><td>Relecture du fichier de configuration entier.</td></tr>
+<tr><td>contenttypes</td><td>Rechargement du tableau des types de contenu en fonction des extensions fichier.<br>(Pas encore impl�ment�)</td></tr>
+<tr><td rowspan=2>swap</td><td>conf</td><td>Lecture d'un autre fichier de configuration.<br>Le nom est envoy� comme attribut au mot-clef "file".</td></tr>
+<tr><td>log</td><td>�changement du fichier "journal de bord"<br>de fa�on � ce qu'on puisse utiliser le vieux fichier avec d'autres applications<br>ce qui est impossible quand le fichier est en utilisation par le serveur.</td></tr>
+</table>
+<br>
+Avant chaque op�ration de Remote Management, le mot de passe envoy� est d'abord compar� � celui d�fini dans le fichier de configuration.<br>
+En cas d'�galit�, le programme proc�de avec l'ex�cution de l'action demand�e.<br>
+En cas de diff�rence ou si le mot de passe d�fini par le fichier de configuration est vide, le programme envoie un message correspondant au client et ignore les autres commandes.
+Une utilit� de <i>Remote Management</i> sera bient�t disponible <a href="http://jeff.orca.fragments.lu/webserver/rm.html">ici</a>.
+<h2><li>Erreurs</li></h2>
+Le serveur peut g�n�rer trois types de messages d'erreurs:
+<ol>
+<h3><li>Erreurs HTTP</li></h3>
+Les erreurs HTTP se produisent par exemple si un fichier ou dossier demand� n'est pas trouv� (erreur 404), si la requ�te n'est pas valide (erreur 400) ou encore si l'acc�s au dossier est refus� (notamment si le fichier index n'existe pas) (403).<br>
+Les erreurs HTTP sont envoy�es au client pour qu'il soit inform� de la cause de l'erreur.
+<h3><li>Erreur I/O</li></h3>
+Une erreur I/O (input output) est le r�sultat d'une op�ration de fichier �chou�e.<br>
+Le terme "fichier" comprend ici des fichiers texte et les connecteurs r�seau.<br>
+En g�n�ral, les erreurs I/O sont capt�es et trait�es. Or il se peut qu'une erreur se produise qui ne soit pas capt�e.<br>
+Un message d'erreur descriptif est alors affich� � la sortie erreur standard (en g�n�ral la console) et le programme se termine.<br>
+Pour cette raison, il est favorable d'ex�cuter le programme dans l'entr�e de commandes (command prompt) plut�t que tout seul.
+<h3><li>Fatal Error</li></h3>
+Les erreurs dites fatales sont pour la plupart d'entre eux des erreurs en relation avec les connecteurs r�seau.<br>
+Quand une op�ration y relative �choue, un message d'erreur fatale est affich� � la console et dans le fichier "journal de bord" (si possible) et le programme attend une entr�e avant de se terminer.
+Additionnellement, quelques d�tails sur la cause de l'erreur sont affich�s, comme l'action qui l'a provoqu�e et le code d'erreur des connecteurs r�seaux.
+</ol>
+<h2><li>D�tails techniques</li></h2>
+<ul>
+<li>Le programme a �t� compil� avec freepascal 1.0.10 du 9 septembre 2007 pour win32 pour i386.<br><a href="htpp://www.freepascal.org/">freepascal.org</a></li>
+<li>Il a �t� compil� et ex�cut� sur un ordinateur avec Windows&trade; Vista Home Premium avec SP1, syst�me d'exploitation de 32 bit.<br><a href="http://www.microsoft.com/">microsoft.com</a></li>
+<li>Il utilise les librairies suivantes:
+<ul>
+<li><u>sockets</u>: interface pour le travail avec des sockets, connections r�seau.<br><a href="http://community.freepascal.org:10000/docs-html/rtl/sockets/">http://community.freepascal.org:10000/docs-html/rtl/sockets/</a></li>
+<li><u>sysutils</u>: utilit�s du syst�me d'exploitation, <br><a href="http://community.freepascal.org:10000/docs-html/rtl/sysutils/">http://community.freepascal.org:10000/docs-html/rtl/sysutils/</a></li>
+<li><u>strutils</u>: d�finit quelques op�rations sur des chaines de caract�res (AnsiReplaceStr(), hex2dec())<br><a href="http://community.freepascal.org:10000/docs-html/rtl/strutils/">http://community.freepascal.org:10000/docs-html/rtl/strutils/</a></li>
+</ul>
+</ul>
+<h2><li>Relev� des activit�s collaboratives</li></h2>
+Mon partenaire est <u>[REDACTED]</u> avec son projet de Poker.
+Je lui ai expliqu� entre autres le principe des tableaux et je l'ai aid� � d�velopper la structure de base de son programme.<br>
+Ceci s'est pass� quand il est venu chez moi le jeudi, 15 mai et est rest� le soir afin de travailler avec moi sur son projet.<br>
+De plus, il a pass� la nuit du 19 au 20 juin chez moi. Le soir du 19, on a travaill� davantage sur son projet.<br><br>
+[REDACTED] n'�tait que dans une mesur�e tr�s limit�e comp�tent de m'aider, mais il a fait de son mieux.
+<h2><li>Cafards</li></h2>
+Cet alin�a traite les "bugs" et les id�es que le serveur devra encore subir.<br>
+Peut-�tre bien qu'il y aura de nombreux patches et ce sera "a patchy server"...
+<ul>
+<li>Envoyer des erreurs HTTP 500 en cas d'erreur fatale ou erreur I/O.</li>
+<li>Capter les erreurs I/O lors de la lecture des connecteurs r�seaux</li>
+</ul>
+Merci de rapportes d'autres id�es ou cafards par le site <a href="http://jeff.orca.fragments.lu/webserver">jeff.orca.lu/webserver</a>.
+</ol>
+</p>
+<hr>
+<p align="right">&copy; <i>Jeff Hemmen</i></p>
+<div style="position: absolute; top:2300 ; right:10 ; color: white">D'ailleurs, mon serveur est poli, m�me si cela ne vous aide pas � gu�rir,<br>et aussi un fan des films James Bond, surtout de Goldfinger...</p>
+</body>
+</html>
